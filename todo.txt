@@ -1,2 +1,32 @@
-- content 내용이 게시글에서 안 보임
-- 로그인 안 한 상태에서 게시글 작성을 눌러 로그인 화면으로 들어갔을 때 올바르게 username과 password를 입력해도 로그인이 안 됨. 계속 로그아웃된 상태로 로그인 화면에 머무름. 
+** 실행방법
+node-simple-board-skeleton 으로 들어와서 npm run start하면 됨
+
+- content 내용이 게시글에서 안 보임 (v)
+
+- 로그인 안 한 상태에서 게시글 작성을 눌러 로그인 화면으로 들어갔을 때 올바르게 username과 password를 입력해도 로그인이 안 됨. 계속 로그아웃된 상태로 로그인 화면에 머무름. (v)
+->views/auth/sign-in.pug 에서 16번째 줄이 form.col-lg-6(method='post')으로 되어 있는데
+form.col-lg-6(action='/auth/sign_in', method='post')으로 변경해줌
+
+지피티 해설
+폼의 action 속성이 없었기 때문에, 기본적으로 폼이 제출될 때 현재 페이지로 제출됩니다. 
+즉, 로그인 페이지에 해당하는 GET /auth/sign_in 페이지에서 POST /auth/sign_in 요청이 아닌, 
+현재 URL (GET /auth/sign_in)로 제출이 됐습니다. 
+이로 인해 POST 요청을 받을 경로인 /auth/sign_in이 아닌, 
+이미 존재하는 다른 경로인 /article/compose로 리다이렉트되었던 것입니다.
+
+
+이 상황을 자세히 설명하자면:
+action 속성이 지정되지 않으면: form 태그가 기본적으로 현재 URL로 데이터를 전송하게 됩니다. 
+즉, 폼을 제출하면 현재 페이지(GET /auth/sign_in)로 POST 요청이 보내집니다.
+
+라우팅 설정:
+/auth/sign_in에 대한 POST 라우팅이 제대로 설정되어 있지 않거나, 
+router.post('/sign_in')가 다른 라우터에서 이미 처리되고 있었다면, 
+기본적으로 페이지를 리다이렉트하는 다른 코드가 실행됐을 가능성이 있습니다.
+예를 들어, authRequired 미들웨어가 /article/compose 경로에 설정돼 있고, 
+사용자가 로그인되지 않은 상태에서 POST /article/compose를 요청하면, 
+로그인 페이지로 리다이렉트할 수 있습니다.
+따라서 action='/auth/sign_in'을 명시적으로 지정하지 않으면, 
+브라우저는 기본적으로 현재 URL로 데이터를 보내게 되는데, 이로 인해 예기치 않은 경로가 실행될 수 있었습니다.
+
+- 내 저장소로 fork 한 다음, clone해서 이 내용 다시 해보기

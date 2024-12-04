@@ -13,7 +13,7 @@ block buttons
     a.btn.btn-info.mr-2(href='/auth/sign_up') Sign Up
 
 block content
-    form.col-lg-6(method='post')
+    form.col-lg-6(action='/auth/sign_in', method='post')
         .input-group.mb-2
             .input-group-prepend
                 span.input-group-text#username-addon Username
